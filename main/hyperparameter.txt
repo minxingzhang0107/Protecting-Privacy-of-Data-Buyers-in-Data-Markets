@@ -1,0 +1,118 @@
+iteration 1: Real-world adult data (data), unit cost (cost), 1 true intent
+iteration 2: Real-world adult data (data), unit cost (cost), 2 true intent
+iteration 3: Synthetic Gaussian distribution (data), Synthetic Gaussian distribution (cost), 2 true intent
+iteration 4: Synthetic Gaussian distribution (data), Synthetic Gaussian distribution (cost), 1 true intent
+
+Hyperparameter alpha:
+- 1 true intent, real-world data:
+---- PI-uniform:
+0.5
+---- EM-f:
+0.5
+---- EM-c:
+0.5
+---- EM-fc:
+0.5
+
+- 2 true intent, real-world data:
+---- PI-uniform:
+1.0
+---- EM-f:
+0.6
+---- EM-c:
+0.5
+---- EM-fc:
+0.6
+
+- 2 true intent, synthetic data:
+---- PI-uniform:
+0.6
+---- EM-f:
+0.4
+---- EM-c:
+0.7
+---- EM-fc:
+0.5
+
+- 1 true intent, synthetic data:
+---- PI-uniform:
+0.8
+---- EM-f:
+0.4
+---- EM-c:
+0.8
+---- EM-fc:
+0.4
+
+
+dimension reduction alpha:
+- 2 true intent, real-world data:
+Reduce age:
+PI-uniform:
+1
+EM-fc:
+0.6
+
+Reduce ethnicity:
+PI-uniform:
+1
+EM-fc:
+0.5
+
+Reduce gender:
+PI-uniform:
+1
+EM-fc:
+0.5
+
+Reduce hours-per-week:
+PI-uniform:
+0.8
+EM-fc:
+0.6
+
+Reduce income:
+PI-uniform:
+1
+EM-fc:
+0.4
+
+
+Difference between current confidence and privacy threshold for PRI uniform attack: G-MCMC:
+- 1 true intent, real-world data:
+0.15
+
+- 2 true intent, real-world data:
+0.01
+
+- 2 true intent, synthetic data:
+0.05
+
+- 1 true intent, synthetic data:
+0.05
+
+- 2 true intent, synthetic data, unit cost:
+0.05
+
+- 1 true intent, synthetic data, unit cost:
+0.05
+
+
+Difference between current confidence and privacy threshold for PRI uniform attack: MCMC:
+- 1 true intent, real-world data:
+0.01
+
+- 2 true intent, real-world data:
+0.1
+
+- 2 true intent, synthetic data:
+0.0001
+
+- 1 true intent, synthetic data:
+0.0001
+
+- 2 true intent, synthetic data, unit cost:
+0.1
+
+- 1 true intent, synthetic data, unit cost:
+0.05
