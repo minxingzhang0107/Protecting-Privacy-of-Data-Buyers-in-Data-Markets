@@ -63,7 +63,7 @@
   - PI-uniform: 1
   - EM-fc: 0.4
 
-## Differences in Confidence and Privacy Thresholds Episilon
+## Differences in Confidence and Privacy Thresholds Epsilon
 
 ### PRI Uniform Attack: G-MCMC
 - **Real-world Adult Dataset**:
