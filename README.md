@@ -8,7 +8,7 @@ This repository contains the code for the paper "Protecting Privacy of Data Buye
 - Jian Pei ([j.pei@duke.edu](mailto:j.pei@duke.edu))
 
 ## Abstract
-Data markets are pivotal in facilitating the discovery, exchange, sharing, and integration of data among users and providers. While the focus has traditionally been on safeguarding the privacy of data owners and third parties, the privacy concerns of data buyers have often been overlooked. This paper addresses this critical gap by exploring the complexities involved in protecting data buyer privacy. We balance privacy concerns with purchase costs and conduct extensive experiments to validate the effectiveness and efficiency of our proposed methods. The insights derived from our research contribute significantly to the understanding and implementation of data buyer privacy protections.
+Data markets serve as crucial platforms facilitating data discovery, exchange, sharing, and integration among data users and providers. However, the paramount concern of privacy has predominantly centered on protecting privacy of data owners and third parties, neglecting the challenges associated with protecting the privacy of data buyers. In this article, we address this gap by modeling the intricacies of data buyer privacy protection and investigating the delicate balance between privacy and purchase cost. Through comprehensive experimentation, our results yield valuable insights, shedding light on the efficacy and efficiency of our proposed approaches.
 
 ## Running Instructions
 To replicate the main results, follow the instructions below:
