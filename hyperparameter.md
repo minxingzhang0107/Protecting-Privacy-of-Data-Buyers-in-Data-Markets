@@ -1,6 +1,6 @@
 # Hyperparameter Selection 
 
-## Iteration Details
+## Data Loading and Iteration Details (Iteration numbers are utilized to track and differentiate various configurations)
 - **Iteration 1**: 
   - Data: Real-world Adult Dataset
   - Cost: Unit Cost of 1
@@ -18,7 +18,7 @@
   - Cost: Synthetic Gaussian Distribution
   - True Intent Size: 1
 
-## Hyperparameter Alpha
+## Alpha
 
 ### Real-world Adult Dataset
 - **True Intent Size of 1**:
@@ -44,7 +44,7 @@
   - EM-c: 0.7
   - EM-fc: 0.5
 
-## Dimension Reduction Alpha
+## Alpha (Dimension Reduction)
 
 ### Real-world Data
 - **Reduce Age**:
@@ -63,7 +63,7 @@
   - PI-uniform: 1
   - EM-fc: 0.4
 
-## Differences in Confidence and Privacy Thresholds Epsilon
+## Epsilon (Differences in Confidence and Privacy Thresholds) 
 
 ### PRI Uniform Attack: G-MCMC
 - **Real-world Adult Dataset**:
