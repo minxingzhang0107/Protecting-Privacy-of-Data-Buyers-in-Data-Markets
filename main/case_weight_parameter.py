@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'defense'))
 from defense import expansion
 
 
-def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, alpha):
+def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid):
     PI = list(product(*published_intent))
     total_num_records_for_each_cell_in_PI = []
     num_records_bought_for_each_cell_in_PI = []
@@ -25,7 +25,7 @@ def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_
         record_index = tuple(record_index)
         current_unit_price = cost_cube[record_index]
         num_records = data_cube[record_index]
-        adjusted_num_records = round(num_records * alpha)
+        adjusted_num_records = round(num_records * percent_of_records_purchased_in_each_grid)
         current_cost = current_unit_price * adjusted_num_records
         total_cost += current_cost
         total_num_records_for_each_cell_in_PI.append(num_records)
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     ## Impact of weight on PI-uniform attack
     weight_list = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
     attack_type = 'PI_uniform_attack'
-    alpha = 1
+    percent_of_records_purchased_in_each_grid = 1
     lambda_value = 0.3
     num_records_in_TI_list_PI_uniform = []
     num_records_in_PI_list_PI_uniform = []
@@ -74,13 +74,13 @@ if __name__ == '__main__':
         w_2 = 1 - weight
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_total_cost = int(TI_total_cost)
         PI_total_cost = int(PI_total_cost)
         num_records_in_TI_list_PI_uniform.append(TI_total_cost)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     ## Impact of weight on EM attack
     weight_list = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-    alpha = 1
+    percent_of_records_purchased_in_each_grid = 1
     lambda_value = 0.3
     attack_type_2 = 'EM_attack'
     background_knowledge = 'both_f_d_and_cost'
@@ -112,13 +112,13 @@ if __name__ == '__main__':
         w_1 = weight
         w_2 = 1 - weight
         published_intent_EM_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, alpha)
+                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_EM_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_total_cost = int(TI_total_cost)
         PI_total_cost = int(PI_total_cost)
         num_records_in_TI_list_EM_attack.append(TI_total_cost)

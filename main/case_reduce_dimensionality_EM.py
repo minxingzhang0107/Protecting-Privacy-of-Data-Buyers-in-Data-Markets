@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'defense'))
 from defense import expansion
 
 
-def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, alpha):
+def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid):
     PI = list(product(*published_intent))
     total_num_records_for_each_cell_in_PI = []
     num_records_bought_for_each_cell_in_PI = []
@@ -26,7 +26,7 @@ def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_
         record_index = tuple(record_index)
         current_unit_price = cost_cube[record_index]
         num_records = data_cube[record_index]
-        adjusted_num_records = round(num_records * alpha)
+        adjusted_num_records = round(num_records * percent_of_records_purchased_in_each_grid)
         current_cost = current_unit_price * adjusted_num_records
         total_cost += current_cost
         total_num_records_for_each_cell_in_PI.append(num_records)
@@ -203,11 +203,11 @@ if __name__ == '__main__':
     ## reduce the dimensionality
     w_1 = 0.6
     w_2 = 1 - w_1
-    alpha = 1
+    percent_of_records_purchased_in_each_grid = 1
     lambda_value = 0.3
     attack_type_2 = 'EM_attack'
     published_intent_EM_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                     true_intent, w_1, w_2, attack_type_2, lambda_value, alpha)
+                                                     true_intent, w_1, w_2, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
     print("We compute the attacker's confidence based on the new published intent")
     background_knowledge_3 = 'both_f_d_and_cost'
     attacker_confidence_parent = EM_attack_analysis.confidence_upper_bound_generalization(
@@ -248,11 +248,11 @@ if __name__ == '__main__':
         TI_total_cost_reduced, TI_total_num_records_for_each_cell_reduced, \
             TI_num_records_bought_for_each_cell_reduced, TI_total_cost_for_each_cell_reduced = \
             compute_total_cost(data_cube_reduced, cost_cube_reduced, true_intent_reduced,
-                               unique_values_on_each_dimension_reduced, alpha)
+                               unique_values_on_each_dimension_reduced, percent_of_records_purchased_in_each_grid)
         PI_total_cost_reduced, PI_total_num_records_for_each_cell_reduced, \
             PI_num_records_bought_for_each_cell_reduced, PI_total_cost_for_each_cell_reduced = \
             compute_total_cost(data_cube_reduced, cost_cube_reduced, published_intent_EM_attack_reduced,
-                               unique_values_on_each_dimension_reduced, alpha)
+                               unique_values_on_each_dimension_reduced, percent_of_records_purchased_in_each_grid)
         PI_size_reduced = compute_size(published_intent_EM_attack_reduced)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost_reduced)
         print("The total cost spent by the buyer on the true intent is: ", TI_total_cost_reduced)
@@ -281,15 +281,15 @@ if __name__ == '__main__':
             w_2_reduced = 1 - w_1_reduced
         new_published_intent_after_projection = expansion.expansion(
             data_cube_reduced, cost_cube_reduced, unique_values_on_each_dimension_reduced, true_intent_reduced,
-            w_1_reduced, w_2_reduced, attack_type_2, lambda_value, alpha)
+            w_1_reduced, w_2_reduced, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
         TI_total_cost_modified, TI_total_num_records_for_each_cell_modified, \
             TI_num_records_bought_for_each_cell_modified, TI_total_cost_for_each_cell_modified = \
             compute_total_cost(data_cube_reduced, cost_cube_reduced, true_intent_reduced,
-                               unique_values_on_each_dimension_reduced, alpha)
+                               unique_values_on_each_dimension_reduced, percent_of_records_purchased_in_each_grid)
         PI_total_cost_modified, PI_total_num_records_for_each_cell_modified, \
             PI_num_records_bought_for_each_cell_modified, PI_total_cost_for_each_cell_modified = \
             compute_total_cost(data_cube_reduced, cost_cube_reduced, new_published_intent_after_projection,
-                               unique_values_on_each_dimension_reduced, alpha)
+                               unique_values_on_each_dimension_reduced, percent_of_records_purchased_in_each_grid)
         PI_size_modified = compute_size(new_published_intent_after_projection)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost_modified)
         print("The total cost spent by the buyer on the true intent is: ", TI_total_cost_modified)

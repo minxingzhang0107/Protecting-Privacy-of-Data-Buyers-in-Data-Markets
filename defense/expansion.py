@@ -77,7 +77,7 @@ def compute_best_dimension_and_feature_only_cost(feature_list, corres_dimension_
 
 
 def compute_total_cost(feature_ij, corresponding_dimension, data_cube, cost_cube, unique_values_on_each_dimension,
-                       published_intent, alpha):
+                       published_intent, percent_of_records_purchased_in_each_grid):
     adjusted_published_intent = published_intent.copy()
     # replace unique_values_on_dimension_i in published_intent with [feature_ij]
     adjusted_published_intent[corresponding_dimension] = [feature_ij]
@@ -92,7 +92,7 @@ def compute_total_cost(feature_ij, corresponding_dimension, data_cube, cost_cube
         record_index = tuple(record_index)
         current_unit_price = cost_cube[record_index]
         num_records = data_cube[record_index]
-        adjusted_num_records = round(num_records * alpha)
+        adjusted_num_records = round(num_records * percent_of_records_purchased_in_each_grid)
         total_cost += current_unit_price * adjusted_num_records
     return total_cost
 
@@ -214,7 +214,7 @@ def compute_nearest_neighbor(current_published_intent, age_feature_distance, hou
 
 
 def expansion(data_cube, cost_cube, unique_values_on_each_dimension, true_intent, w_1, w_2, attack_type, lambda_value,
-              alpha):
+              percent_of_records_purchased_in_each_grid):
     dimension_name_list = ['age', 'race', 'sex', 'hours-per-week', 'income']
     # here we consider dimension reduction as a case study
     if len(unique_values_on_each_dimension) == 4:
@@ -273,7 +273,7 @@ def expansion(data_cube, cost_cube, unique_values_on_each_dimension, true_intent
                     continue
                 for feature in current_dimension:
                     total_cost_tmp = compute_total_cost(feature, i, data_cube, cost_cube,
-                                                        unique_values_on_each_dimension, published_intent, alpha)
+                                                        unique_values_on_each_dimension, published_intent, percent_of_records_purchased_in_each_grid)
                     increase_tmp = compute_increase_PI_attack(feature, i, published_intent)
                     feature_list.append(feature)
                     corres_dimension_list.append(i)
@@ -333,7 +333,7 @@ def expansion(data_cube, cost_cube, unique_values_on_each_dimension, true_intent
                     continue
                 for feature in current_dimension:
                     total_cost_tmp = compute_total_cost(feature, i, data_cube, cost_cube,
-                                                        unique_values_on_each_dimension, published_intent, alpha)
+                                                        unique_values_on_each_dimension, published_intent, percent_of_records_purchased_in_each_grid)
                     increase_tmp = compute_increase_EM_attack(data_cube, cost_cube, feature, i, published_intent,
                                                               unique_values_on_each_dimension)
                     feature_list.append(feature)
@@ -353,7 +353,7 @@ def expansion(data_cube, cost_cube, unique_values_on_each_dimension, true_intent
 
 
 def expansion_EMF_EMC(data_cube, cost_cube, unique_values_on_each_dimension, true_intent, w_1, w_2,
-                      background_knowledge, lambda_value, alpha):
+                      background_knowledge, lambda_value, percent_of_records_purchased_in_each_grid):
     dimension_name_list = ['age', 'race', 'sex', 'hours-per-week', 'income']
     age_feature_distance, hours_per_week_feature_distance = pairwise_distance_age_hours_per_week()
     published_intent = true_intent.copy()
@@ -399,7 +399,7 @@ def expansion_EMF_EMC(data_cube, cost_cube, unique_values_on_each_dimension, tru
                     continue
                 for feature in current_dimension:
                     total_cost_tmp = compute_total_cost(feature, i, data_cube, cost_cube,
-                                                        unique_values_on_each_dimension, published_intent, alpha)
+                                                        unique_values_on_each_dimension, published_intent, percent_of_records_purchased_in_each_grid)
                     increase_tmp = compute_increase_EM_attack_only_f_d(
                         data_cube, feature, i, published_intent, unique_values_on_each_dimension)
                     feature_list.append(feature)
@@ -457,7 +457,7 @@ def expansion_EMF_EMC(data_cube, cost_cube, unique_values_on_each_dimension, tru
                     continue
                 for feature in current_dimension:
                     total_cost_tmp = compute_total_cost(feature, i, data_cube, cost_cube,
-                                                        unique_values_on_each_dimension, published_intent, alpha)
+                                                        unique_values_on_each_dimension, published_intent, percent_of_records_purchased_in_each_grid)
                     increase_tmp = compute_increase_EM_attack_only_cost(cost_cube, feature, i, published_intent,
                                                                         unique_values_on_each_dimension)
                     feature_list.append(feature)

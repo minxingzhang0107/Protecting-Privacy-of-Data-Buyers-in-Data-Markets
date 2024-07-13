@@ -15,7 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'defense'))
 from defense import expansion
 
 
-def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, alpha):
+def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid):
     PI = list(product(*published_intent))
     total_num_records_for_each_cell_in_PI = []
     num_records_bought_for_each_cell_in_PI = []
@@ -30,7 +30,7 @@ def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_
         current_unit_price = cost_cube[record_index[0]][record_index[1]][record_index[2]][record_index[3]][
             record_index[4]]
         num_records = data_cube[record_index[0]][record_index[1]][record_index[2]][record_index[3]][record_index[4]]
-        adjusted_num_records = round(num_records * alpha)
+        adjusted_num_records = round(num_records * percent_of_records_purchased_in_each_grid)
         current_cost = current_unit_price * adjusted_num_records
         total_cost += current_cost
         total_num_records_for_each_cell_in_PI.append(num_records)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     ## set parameter
     lambda_value = 0.3
     attack_type = 'PI_uniform_attack'
-    alpha = 1
+    percent_of_records_purchased_in_each_grid = 1
     # adjust the true intent
     race_dimension = true_intent[1].copy()
     race_dimension = [race_dimension[0]]
@@ -102,15 +102,15 @@ if __name__ == '__main__':
         expanded_feature_name_list = []
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
         confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         confidence_list_lower.append(confidence_lower)
         confidence_list_upper.append(confidence_upper)
         PI_total_cost_list.append(PI_total_cost)
@@ -146,17 +146,17 @@ if __name__ == '__main__':
             published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube,
                                                                      unique_values_on_each_dimension,
                                                                      true_intent, w_1_new, w_2_new, attack_type,
-                                                                     lambda_value, alpha)
+                                                                     lambda_value, percent_of_records_purchased_in_each_grid)
             confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
             confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent,
                                                                          published_intent_PI_uniform_attack)
             TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
                 TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
                 PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube,
                                                                  published_intent_PI_uniform_attack,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             confidence_list_lower.append(confidence_lower)
             confidence_list_upper.append(confidence_upper)
             PI_total_cost_list.append(PI_total_cost)
@@ -234,15 +234,15 @@ if __name__ == '__main__':
         expanded_feature_name_list = []
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
         confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         confidence_list_lower.append(confidence_lower)
         confidence_list_upper.append(confidence_upper)
         PI_total_cost_list.append(PI_total_cost)
@@ -281,17 +281,17 @@ if __name__ == '__main__':
             published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube,
                                                                      unique_values_on_each_dimension,
                                                                      true_intent, w_1_new, w_2_new,
-                                                                     attack_type, lambda_value, alpha)
+                                                                     attack_type, lambda_value, percent_of_records_purchased_in_each_grid)
             confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
             confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent,
                                                                          published_intent_PI_uniform_attack)
             TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
                 TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
                 PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube,
                                                                  published_intent_PI_uniform_attack,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             confidence_list_lower.append(confidence_lower)
             confidence_list_upper.append(confidence_upper)
             PI_total_cost_list.append(PI_total_cost)
@@ -372,15 +372,15 @@ if __name__ == '__main__':
         expanded_feature_name_list = []
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
         confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         confidence_list_lower.append(confidence_lower)
         confidence_list_upper.append(confidence_upper)
         PI_total_cost_list.append(PI_total_cost)
@@ -410,17 +410,17 @@ if __name__ == '__main__':
             published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube,
                                                                      unique_values_on_each_dimension,
                                                                      true_intent, w_1_new, w_2_new, attack_type,
-                                                                     lambda_value, alpha)
+                                                                     lambda_value, percent_of_records_purchased_in_each_grid)
             confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
             confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent,
                                                                          published_intent_PI_uniform_attack)
             TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
                 TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
                 PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube,
                                                                  published_intent_PI_uniform_attack,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             confidence_list_lower.append(confidence_lower)
             confidence_list_upper.append(confidence_upper)
             PI_total_cost_list.append(PI_total_cost)
@@ -501,15 +501,15 @@ if __name__ == '__main__':
         expanded_feature_name_list = []
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
         confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         confidence_list_lower.append(confidence_lower)
         confidence_list_upper.append(confidence_upper)
         PI_total_cost_list.append(PI_total_cost)
@@ -542,16 +542,16 @@ if __name__ == '__main__':
             published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube,
                                                                      unique_values_on_each_dimension,
                                                                      true_intent, w_1_new, w_2_new, attack_type,
-                                                                     lambda_value, alpha)
+                                                                     lambda_value, percent_of_records_purchased_in_each_grid)
             confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
             confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
             TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
                 TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
                 PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube,
                                                                  published_intent_PI_uniform_attack,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             confidence_list_lower.append(confidence_lower)
             confidence_list_upper.append(confidence_upper)
             PI_total_cost_list.append(PI_total_cost)
@@ -629,15 +629,15 @@ if __name__ == '__main__':
         expanded_feature_name_list = []
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, attack_type, lambda_value,
-                                                                 alpha)
+                                                                 percent_of_records_purchased_in_each_grid)
         confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
         confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent, published_intent_PI_uniform_attack)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         confidence_list_lower.append(confidence_lower)
         confidence_list_upper.append(confidence_upper)
         PI_total_cost_list.append(PI_total_cost)
@@ -667,17 +667,17 @@ if __name__ == '__main__':
             published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube,
                                                                      unique_values_on_each_dimension,
                                                                      true_intent, w_1_new, w_2_new, attack_type,
-                                                                     lambda_value, alpha)
+                                                                     lambda_value, percent_of_records_purchased_in_each_grid)
             confidence_lower = PI_attack_analysis.confidence_lower_bound(published_intent_PI_uniform_attack)
             confidence_upper = PI_attack_analysis.confidence_upper_bound(true_intent,
                                                                          published_intent_PI_uniform_attack)
             TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
                 TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
                 PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube,
                                                                  published_intent_PI_uniform_attack,
-                                                                 unique_values_on_each_dimension, alpha)
+                                                                 unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
             confidence_list_lower.append(confidence_lower)
             confidence_list_upper.append(confidence_upper)
             PI_total_cost_list.append(PI_total_cost)

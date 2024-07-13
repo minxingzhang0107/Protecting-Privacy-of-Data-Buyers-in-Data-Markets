@@ -22,7 +22,7 @@ from defense import MCMC
 from defense import Genetic_sampling
 
 
-def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, alpha):
+def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid):
     PI = list(product(*published_intent))
     total_num_records_for_each_cell_in_PI = []
     num_records_bought_for_each_cell_in_PI = []
@@ -37,7 +37,7 @@ def compute_total_cost(data_cube, cost_cube, published_intent, unique_values_on_
         record_index = tuple(record_index)
         current_unit_price = cost_cube[record_index]
         num_records = data_cube[record_index]
-        adjusted_num_records = round(num_records * alpha)
+        adjusted_num_records = round(num_records * percent_of_records_purchased_in_each_grid)
         current_cost = current_unit_price * adjusted_num_records
         total_cost += current_cost
         total_num_records_for_each_cell_in_PI.append(num_records)
@@ -103,9 +103,9 @@ def compute_stat_PRI(cost_cube, unique_values_on_each_dimension, pseudo_PI, TI, 
 if __name__ == '__main__':
     ## specify the parameters
     parser = argparse.ArgumentParser(description='Specify the parameters')
-    parser.add_argument('--attack_type', type=str, default='PRI_attack',
+    parser.add_argument('--attack_type', type=str, default='PI_uniform_attack',
                         help='Specify the attack type: PI_uniform_attack, EM_attack, PRI_attack')
-    parser.add_argument('--data_type', type=str, default='synthetic_data',
+    parser.add_argument('--data_type', type=str, default='real_data',
                         help='Specify the data type: real_data, synthetic_data')
     parser.add_argument('--true_intent_size', type=int, default=2,
                         help='Specify the true intent size: 1, 2')
@@ -164,14 +164,14 @@ if __name__ == '__main__':
         else:
             raise ValueError("Invalid current_iteration")
         w_2 = 1 - w_1
-        alpha = 1
+        percent_of_records_purchased_in_each_grid = 1
         lambda_value = 0.3
         print("If there is no disguise for PI uniform attack, published intent is the same as true intent.")
         print("The confidence's lower bound is: ", PI_attack_analysis.confidence_lower_bound(true_intent))
         print("The confidence's upper bound is: ", PI_attack_analysis.confidence_upper_bound(true_intent, true_intent))
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
         print("The total cost spent by the buyer on the true intent is: ", PI_total_cost)
         print("The number of records bought by the buyer in the published intent is: ",
@@ -188,17 +188,17 @@ if __name__ == '__main__':
         attack_type = 'PI_uniform_attack'
         start_time = time.time()
         published_intent_PI_uniform_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                                 true_intent, w_1, w_2, attack_type, lambda_value, alpha)
+                                                                 true_intent, w_1, w_2, attack_type, lambda_value, percent_of_records_purchased_in_each_grid)
         end_time = time.time()
         print("Time taken for expansion method to defend against PI-uniform attack: ", end_time - start_time)
         # print("The resulted published intent is: ", published_intent_PI_uniform_attack)
         # print("The true intent is: ", true_intent)
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_PI_uniform_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_tuple_form = list(product(*true_intent))
         PI_tuple_form = list(product(*published_intent_PI_uniform_attack))
         print("The attacker's confidence based on the new published intent")
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     if parser.parse_args().attack_type == 'EM_attack':
         print("EM attack")
         lambda_value = 0.3
-        alpha = 1
+        percent_of_records_purchased_in_each_grid = 1
         attack_type_2 = 'EM_attack'
         print("-----------------------")
         print("-----------------------")
@@ -232,7 +232,7 @@ if __name__ == '__main__':
                                                                        background_knowledge))
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
         print("The total cost spent by the buyer on the true intent is: ", PI_total_cost)
         print("The number of records bought by the buyer in the published intent is: ",
@@ -254,7 +254,7 @@ if __name__ == '__main__':
         start_time = time.time()
         published_intent_EM_attack = expansion.expansion_EMF_EMC(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, background_knowledge,
-                                                                 lambda_value, alpha)
+                                                                 lambda_value, percent_of_records_purchased_in_each_grid)
         print("The time spent on expansion is: ", time.time() - start_time)
         print("The attacker confidence's upper bound after protection via expansion method is: ",
               EM_attack_analysis.confidence_upper_bound_generalization(data_cube, cost_cube, published_intent_EM_attack,
@@ -262,10 +262,10 @@ if __name__ == '__main__':
                                                                        background_knowledge))
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_EM_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_tuple_form = list(product(*true_intent))
         PI_tuple_form = list(product(*published_intent_EM_attack))
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
@@ -285,7 +285,7 @@ if __name__ == '__main__':
                                                                        background_knowledge_2))
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
         print("The total cost spent by the buyer on the true intent is: ", PI_total_cost)
         print("The number of records bought by the buyer in the published intent is: ",
@@ -307,7 +307,7 @@ if __name__ == '__main__':
         start_time = time.time()
         published_intent_EM_attack = expansion.expansion_EMF_EMC(data_cube, cost_cube, unique_values_on_each_dimension,
                                                                  true_intent, w_1, w_2, background_knowledge_2,
-                                                                 lambda_value, alpha)
+                                                                 lambda_value, percent_of_records_purchased_in_each_grid)
         print("The time spent on expansion is: ", time.time() - start_time)
         print("The attacker confidence's upper bound after protection via expansion method is: ",
               EM_attack_analysis.confidence_upper_bound_generalization(data_cube, cost_cube, published_intent_EM_attack,
@@ -315,10 +315,10 @@ if __name__ == '__main__':
                                                                        background_knowledge_2))
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_EM_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_tuple_form = list(product(*true_intent))
         PI_tuple_form = list(product(*published_intent_EM_attack))
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
@@ -338,7 +338,7 @@ if __name__ == '__main__':
                                                                        background_knowledge_3))
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
         print("The total cost spent by the buyer on the true intent is: ", PI_total_cost)
         print("The number of records bought by the buyer in the published intent is: ",
@@ -366,7 +366,7 @@ if __name__ == '__main__':
               records_in_TI_f_d_cost_multiplication_maximum)
         start_time = time.time()
         published_intent_EM_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, alpha)
+                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
         print("The time spent on expansion is: ", time.time() - start_time)
         print("The attacker confidence's upper bound after protection via expansion method is: ",
               EM_attack_analysis.confidence_upper_bound_generalization(data_cube, cost_cube, published_intent_EM_attack,
@@ -374,10 +374,10 @@ if __name__ == '__main__':
                                                                        background_knowledge_3))
         TI_total_cost, TI_total_num_records_for_each_cell, TI_num_records_bought_for_each_cell, \
             TI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, true_intent,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         PI_total_cost, PI_total_num_records_for_each_cell, PI_num_records_bought_for_each_cell, \
             PI_total_cost_for_each_cell = compute_total_cost(data_cube, cost_cube, published_intent_EM_attack,
-                                                             unique_values_on_each_dimension, alpha)
+                                                             unique_values_on_each_dimension, percent_of_records_purchased_in_each_grid)
         TI_tuple_form = list(product(*true_intent))
         PI_tuple_form = list(product(*published_intent_EM_attack))
         print("The total cost spent by the buyer on the published intent is: ", PI_total_cost)
@@ -400,13 +400,13 @@ if __name__ == '__main__':
         elif current_iteration == 4:
             w_1 = 0.4
         w_2 = 1 - w_1
-        alpha = 1
+        percent_of_records_purchased_in_each_grid = 1
         lambda_value = 0.3
         sample_time = 100000
         iteration_num = 100000
         attack_type_2 = 'EM_attack'
         published_intent_EM_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, alpha)
+                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
         TI_num_records, TI = compute_total_num_records(data_cube, unique_values_on_each_dimension, true_intent)
         PI_num_records, PI = compute_total_num_records(data_cube, unique_values_on_each_dimension,
                                                        published_intent_EM_attack)
@@ -489,7 +489,7 @@ if __name__ == '__main__':
         # load the ml_simulation_result_true_intent.npy
         saved_list = np.load(os.path.join(iteration_directory, 'ml_simulation_result_true_intent.npy'))
         published_intent_EM_attack = expansion.expansion(data_cube, cost_cube, unique_values_on_each_dimension,
-                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, alpha)
+                                                         true_intent, w_1, w_2, attack_type_2, lambda_value, percent_of_records_purchased_in_each_grid)
         TI_num_records, TI = compute_total_num_records(data_cube, unique_values_on_each_dimension, true_intent)
         PI_num_records, PI = compute_total_num_records(data_cube, unique_values_on_each_dimension,
                                                        published_intent_EM_attack)
