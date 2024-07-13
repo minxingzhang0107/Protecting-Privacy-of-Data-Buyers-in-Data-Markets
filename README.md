@@ -1,6 +1,7 @@
 # Protecting Privacy of Data Buyers in Data Markets
 
-This repository contains the code for the paper "Protecting Privacy of Data Buyers in Data Markets." The short version of this paper is accepted in IEEE Internet Computing (DOI: 10.1109/MIC.2024.3398626).
+This repository contains the code for the paper "Protecting Privacy of Data Buyers in Data Markets." The short version of this paper is accepted in IEEE Internet Computing ([DOI: 10.1109/MIC.2024.3398626](https://doi.org/10.1109/MIC.2024.3398626)
+).
 
 ## Authors
 - Minxing Zhang ([minxing.zhang@duke.edu](mailto:minxing.zhang@duke.edu))
