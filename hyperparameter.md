@@ -1,6 +1,6 @@
 # Hyperparameter Selection 
 
-## Data Loading and Iteration Details (Iteration numbers are utilized to track and differentiate various configurations)
+## Data Loading and Iteration Details (Iteration Numbers Are Utilized to Track and Differentiate Various Configurations)
 - **Iteration 1**: 
   - Data: Real-world Adult Dataset
   - Cost: Unit Cost of 1
