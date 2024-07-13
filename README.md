@@ -21,16 +21,16 @@ To replicate the main results, follow the instructions below:
   - Associated defense strategies
 
 ### Ablation Studies
-- **True Intent Size Influence**:
+- **True Intent Size Impact**:
   - `case_increase_TI_PI.py`: Examines the impact of true intent size for the PI-uniform attack.
   - `case_increase_TI_EM.py`: Examines the impact of true intent size for the efficiency maximization attack.
-- **Dimensionality Impact**:
-  - `case_reduce_dimensionality_PI.py`: Studies the effects of dimensionality reduction on the PI-uniform attack.
-  - `case_reduce_dimensionality_EM.py`: Studies the effects of dimensionality reduction on the efficiency maximization attack.
-- **Mixed Dimensions**:
+- **True Intent Size Impact on Specific Dimension**:
   - `case_increase_TI_mix_age_dimension.py`: Investigates the influence of true intent on the Age dimension for both PI-uniform and efficiency maximization attacks.
   - `case_increase_TI_mix_race_dimension.py`: Investigates the influence of true intent on the Ethnicity dimension for both attack types.
   - `case_increase_TI_mix_hpw_dimension.py`: Investigates the influence of true intent on the Hours Per Week dimension for both attack strategies.
-- **Parameter and Threshold Impacts**:
+- **Dimensionality Impact**:
+  - `case_reduce_dimensionality_PI.py`: Studies the effects of dimensionality reduction on the PI-uniform attack.
+  - `case_reduce_dimensionality_EM.py`: Studies the effects of dimensionality reduction on the efficiency maximization attack.
+- **Alpha and Lambda Impact**:
   - `case_weight_parameter.py`: Explores the influence of the parameter alpha used in the expansion method.
   - `case_impact_of_lambda.py`: Explores the influence of the privacy threshold lambda.
